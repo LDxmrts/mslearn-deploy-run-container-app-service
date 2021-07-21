@@ -13,7 +13,9 @@ RUN dotnet build "SampleWeb.csproj" -c Release -o /app
 FROM build AS publish
 RUN dotnet publish "SampleWeb.csproj" -c Release -o /app
 
-FROM base AS final
+FROM node:current-alpine
+COPY . /app
+COPY /node/. /app
 WORKDIR /app
-COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "SampleWeb.dll"]
+RUN npm install
+ENTRYPOINT ["npm", "start"]
